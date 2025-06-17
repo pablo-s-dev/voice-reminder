@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Voice Reminder – Keep Focus</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    *::-webkit-scrollbar-track {
+      background-color: transparent;
+    }
+
+    *::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      background-color: #9194997c;
+      border-radius: 3px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      width: 320px;
+      min-height: 280px;
+      background-color: #f3f4f6;
+      padding: 1rem;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      overflow-y: auto;
+      padding-bottom: 3rem;
+    }
+
+    .input-group {
+      width: 100%;
+      margin: 0.5rem 0;
+    }
+
+    label {
+      display: block;
+      font-size: 0.7rem;
+      font-weight: 500;
+      color: #667388;
+      margin-bottom: 0.25rem;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    select {
+
+      display: block;
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+      outline: none;
+      box-sizing: border-box;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: #3b82f6;
+    }
+
+    .remove-phrase-button:focus {
+      border: none;
+      box-shadow: none;
+    }
+
+    .remove-phrase-button:active {
+      scale: 0.9;
+      color: rgb(170, 112, 112);
+    }
+
+    select {
+      background-color: #fff;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 8px;
+      background: #d1d5db;
+      border-radius: 5px;
+      outline: none;
+      opacity: 0.7;
+      transition: opacity .2s;
+    }
+
+    input[type="range"]:hover {
+      opacity: 1;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #3b82f6;
+      cursor: pointer;
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    }
+
+    .button-group {
+      width: 100%;
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    button {
+      display: inline-block;
+      font-weight: 600;
+      padding: 0.5rem 1rem;
+      border-radius: 0.375rem;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      outline: none;
+      transition: background-color 150ms ease-in-out;
+      cursor: pointer;
+      width: auto;
+      min-width: 120px;
+      border: none;
+    }
+
+    button:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+    }
+
+    /* #actionButton.start-button {
+      background-color: #22c55e;
+      color: white;
+    } */
+
+    /* #actionButton.start-button:hover {
+      background-color: #16a34a;
+    }
+
+    #actionButton.stop-button {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    #actionButton.stop-button:hover {
+      background-color: #dc2626;
+    } */
+
+    button:disabled {
+      background-color: #d1d5db;
+      color: #6b7280;
+      cursor: not-allowed;
+      box-shadow: none;
+    }
+
+    button:disabled:hover {
+      background-color: #d1d5db;
+    }
+
+    #statusMessage,
+    #voiceStatusMessage {
+      font-size: 0.875rem;
+      margin-top: 0.5rem;
+      text-align: center;
+      color: #4b5563;
+    }
+
+    #statusMessage.text-green-600 {
+      color: #16a34a;
+    }
+
+    #statusMessage.text-red-600 {
+      color: #dc2626;
+    }
+
+    #statusMessage.text-gray-600 {
+      color: #4b5563;
+    }
+
+    #voiceStatusMessage.text-red-600 {
+      color: #dc2626;
+    }
+
+    .messages-container-wrapper {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    #messageInputsContainer {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .message-input-item {
+      width: 100%;
+      text-overflow: ellipsis;
+      gap: 0.5rem;
+      align-items: center;
+      display: flex;
+    }
+
+    .message-input-item span {
+      text-overflow: ellipsis;
+    }
+
+    .message-input-item input[type="text"] {
+      flex-grow: 1;
+    }
+
+    .remove-phrase-button {
+      background-color: transparent;
+      color: #6b7280;
+      border: none;
+      border-radius: 50%;
+      width: 0.5rem;
+      height: 0.5rem;
+      min-width: auto;
+      padding: 4px;
+      font-size: 0.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 150ms ease-in-out, color 150ms ease-in-out;
+      box-shadow: none;
+      flex-shrink: 0;
+      padding: 4px;
+      line-height: 1;
+      visibility: hidden;
+      opacity: 0;
+      transition: visibility 0s, opacity 0.3s linear;
+    }
+
+    .remove-phrase-button.visible {
+      visibility: visible;
+      opacity: 1;
+    }
+
+    .remove-phrase-button:hover {
+      color: rgb(170, 112, 112);
+    }
+
+    #addPhraseButton {
+      width: 100%;
+      margin-top: 0.5rem;
+      background-color: #22c55e;
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      padding: 0.5rem 1rem;
+      font-size: 0.875rem;
+      font-weight: 600;
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+      transition: background-color 150ms ease-in-out, box-shadow 150ms ease-in-out;
+      cursor: pointer;
+      text-align: center;
+    }
+
+    #addPhraseButton:hover {
+      background-color: #16a34a;
+      box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.2);
+    }
+
+    .header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+      gap: 0.3rem;
+    }
+
+    .header>img {
+      height: 3rem;
+      width: 3rem;
+      margin-right: 0.5rem;
+    }
+
+    .header > h1 {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #817bd3;
+    }
+
+    #actionButton {
+
+      width: 2rem;
+      height: 2rem;
+      background-color: transparent;
+      display: inline-block;
+      font-weight: normal;
+      padding: 0;
+      border-radius: 0;
+      box-shadow: none;
+      outline: none;
+      cursor: pointer;
+      min-width: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #actionIcon {
+      width: 100%;
+      height: 100%;
+      background-size: contain;
+      background-repeat: no-repeat;
+
+    }
+
+    .play-icon {
+      background-image: url('icons/play.svg');
+    }
+
+    #actionButton > .play-icon {
+      width: 70%;
+      height: 70%;
+    }
+
+    .stop-icon {
+      background-image: url('icons/stop.svg');
+    }
+  </style>
+</head>
+
+<body>
+  <div class="header">
+    <img src="icons/brain-3.svg" alt="Voice Reminder Logo">
+    <h1>Voice Reminder — Keep Focus</h1>
+    <button id="actionButton">
+      <div id="actionIcon" class="play-icon">
+    </button>
+    <!-- <div id="statusMessage"></div> -->
+  </div>
+
+  <div class="input-group">
+    <label>Messages:</label>
+    <div class="messages-container-wrapper">
+      <div id="messageInputsContainer">
+        <!-- Message inputs will be added here by JavaScript -->
+      </div>
+      <button id="addPhraseButton">Add Phrase</button>
+    </div>
+  </div>
+
+  <div class="input-group">
+    <label for="intervalInput">Interval (seconds):</label>
+    <input type="number" id="intervalInput" min="5" value="30">
+  </div>
+
+  <div class="input-group">
+    <label for="voiceSelect">Select Voice:</label>
+    <select id="voiceSelect">
+      <!-- Voices will be populated here by JavaScript -->
+    </select>
+    <div id="voiceStatusMessage"></div>
+  </div>
+
+  <div class="input-group">
+    <label for="speedInput">Speech Speed: <span id="speedValue">1.0</span></label>
+    <input type="range" id="speedInput" min="0.5" max="2.0" step="0.1" value="1.0">
+  </div>
+
+  <div class="input-group">
+    <label for="volumeInput">Volume: <span id="volumeValue">1.0</span></label>
+    <input type="range" id="volumeInput" min="0.0" max="1.0" step="0.1" value="1.0">
+  </div>
+
+
+
+
+
+  <script src="popup.js"></script>
+</body>
+
+</html>
