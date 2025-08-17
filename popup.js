@@ -215,8 +215,6 @@ function syncCategory() {
         .map(input => input.value.trim());
     const category = categories[categorySelect.value]
 
-    console.log(category)
-
     category.messages = messages;
     category.voice = voiceSelect.value;
     category.volume = volumeInput.value;
@@ -225,10 +223,6 @@ function syncCategory() {
     speedValueSpan.textContent = speedInput.value;
     category.interval = intervalInput.value;
     category.name = categorySelect.value
-
-    console.log(category)
-
-    console.log(categories)
 
     chrome.storage.local.set({ categories });
     syncDelBtns();
