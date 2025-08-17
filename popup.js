@@ -9,11 +9,179 @@ const volumeValueSpan = document.getElementById('volumeValue');
 const voiceStatusMessage = document.getElementById('voiceStatusMessage');
 const actionButton = document.getElementById('actionButton');
 const actionIcon = document.getElementById("actionIcon");
+const category_name_input = document.getElementById("category_name_input");
+const newCategoryModalBtn = document.getElementById("newCategoryModalBtn");
+const cancelCategoryBtn = document.getElementById("cancelCategoryBtn");
+const categoryForm = document.getElementById("categoryForm");
+const saveCategoryBtn = document.getElementById("saveCategoryBtn");
+const categorySelect = document.getElementById("categorySelect");
 // const statusMessage = document.getElementById('statusMessage');
 
 let messages = [];
+let categories = {};
 
-function updateButtonStates(isRunning) {
+function showCategoryForm() {
+
+    const modal = document.querySelector("#category_form_modal")
+
+    modal.style.visibility = "visible";
+
+}
+
+newCategoryModalBtn.onclick = showCategoryForm;
+
+function hideCategoryForm() {
+
+    const modal = document.querySelector("#category_form_modal")
+
+    modal.style.visibility = "hidden";
+
+}
+
+cancelCategoryBtn.onclick = hideCategoryForm;
+
+function onSaveCategoryClick(e) {
+
+    e.preventDefault();
+
+    const categoryName = category_name_input.value;
+
+    if (!categoryName) {
+        alert("Invalid Category Name")
+        return
+    }
+    if (categoryName.length > 20) {
+        alert("Name is too long. It must have less than 21 characters.")
+        return
+    }
+
+    saveCategoryOnStorage(categoryName)
+
+    refreshCategorySelect();
+
+    categorySelect.value = categoryName;
+
+    applyCategory(categories[categoryName]);
+
+    hideCategoryForm();
+
+}
+
+function saveCategoryOnStorage(categoryName) {
+
+    const category = {
+        name: categoryName,
+        messages,
+        volume: volumeInput.value,
+        speed: speedInput.value,
+        voice: voiceSelect.value,
+        interval: intervalInput.value
+    }
+
+    console.log("category: ", category);
+
+
+
+    categories[categoryName] = category;
+
+    chrome.storage.local.set({ categories });
+
+
+
+
+}
+
+saveCategoryBtn.onclick = onSaveCategoryClick;
+
+async function loadCategories() {
+
+    try {
+
+        const saved_categories = (await chrome.storage.local.get("categories")).categories;
+
+        console.log("saved categories:", saved_categories)
+
+        categories = saved_categories ?? {}
+        refreshCategorySelect();
+
+    }
+    catch (e) {
+        console.log(e)
+    }
+
+}
+
+loadCategories();
+
+function refreshCategorySelect() {
+
+    console.log(categories)
+
+    const categories_arr = Array.from(Object.values(categories));
+
+    console.log(categories_arr)
+
+    if (categories_arr.length == 0) {
+        return;
+    }
+
+    categorySelect.innerHTML = "";
+
+    categories_arr.forEach(category => {
+        const option = document.createElement("option")
+
+        console.log(category)
+
+        option.value = category.name;
+        option.innerText = category.name;
+
+        console.log(option.value)
+        console.log(option.innerText)
+
+        categorySelect.appendChild(option);
+    })
+}
+
+function applyCategory(category) {
+
+    console.log(category)
+
+    if (!category) return;
+
+    if (category.volume != null){
+         volumeInput.value = category.volume;
+         volumeValueSpan.textContent = category.volume;
+    }
+    if (category.speed != null) {
+        speedInput.value = category.speed;
+        speedValueSpan.textContent = category.speed;
+    }
+    if (category.voice != null) {
+        voiceSelect.value = category.voice;
+    }
+    if (category.interval != null) intervalInput.value = category.interval;
+    if (category.messages) {
+        messages = category.messages;
+        syncMessages();
+    }
+}
+categorySelect.onchange = e => {
+    const categoryName = e.target.value;
+
+    const category = categories[categoryName];
+
+    applyCategory(category);
+}
+
+function syncMessages() {
+
+    messageInputsContainer.innerHTML = "";
+    messages.forEach(msg => addMessageInput(msg));
+    syncDelBtns();
+}
+
+
+function syncBtnStates(isRunning) {
     if (isRunning) {
         actionIcon.classList.remove("play-icon");
         actionIcon.classList.add("stop-icon");
@@ -44,7 +212,7 @@ function updateButtonStates(isRunning) {
 //     }
 // }
 
-function updateRemoveButtonVisibility() {
+function syncDelBtns() {
     const messageItems = messageInputsContainer.querySelectorAll('.message-input-item');
     messageItems.forEach((item, index) => {
         const removeButton = item.querySelector('.remove-phrase-button');
@@ -58,11 +226,22 @@ function updateRemoveButtonVisibility() {
     });
 }
 
-function saveMessagesToStorage() {
+function syncCategory() {
     messages = Array.from(messageInputsContainer.querySelectorAll('input[type="text"]'))
-                     .map(input => input.value.trim());
-    chrome.storage.local.set({ messages: messages });
-    updateRemoveButtonVisibility();
+        .map(input => input.value.trim());
+    const category = categories[categorySelect.value]
+
+    category.messages = messages;
+    category.voice = voiceSelect.value;
+    category.volume = volumeInput.value;
+    volumeValueSpan.textContent = volumeInput.value;
+    category.speed = speedInput.value;
+    speedValueSpan.textContent = speedInput.value;
+    category.interval = intervalInput.value;
+    category.name = categorySelect.value
+
+    chrome.storage.local.set({ categories });
+    syncDelBtns();
 }
 
 function addMessageInput(message = '') {
@@ -73,7 +252,7 @@ function addMessageInput(message = '') {
     input.type = 'text';
     input.placeholder = 'Enter your reminder phrase...';
     input.value = message;
-    input.addEventListener('input', saveMessagesToStorage);
+    input.addEventListener('input', syncCategory);
 
     const removeButton = document.createElement('button');
     removeButton.classList.add('remove-phrase-button');
@@ -82,10 +261,10 @@ function addMessageInput(message = '') {
     removeButton.addEventListener('click', () => {
         if (messageInputsContainer.children.length > 1) {
             messageInputsContainer.removeChild(div);
-            saveMessagesToStorage();
+            syncCategory();
         } else {
             input.value = '';
-            saveMessagesToStorage();
+            syncCategory();
             // statusMessage.textContent = 'Last phrase cleared. Add more if needed.';
             // setTimeout(() => {
             //     statusMessage.textContent = '';
@@ -96,7 +275,7 @@ function addMessageInput(message = '') {
     div.appendChild(input);
     div.appendChild(removeButton);
     messageInputsContainer.appendChild(div);
-    updateRemoveButtonVisibility();
+    syncDelBtns();
 }
 
 addPhraseButton.addEventListener('click', () => addMessageInput());
@@ -136,14 +315,14 @@ function populateVoiceList() {
         voiceSelect.appendChild(option);
     });
 
-    chrome.storage.local.get(['selectedVoiceURI'], (result) => {
-        if (result.selectedVoiceURI) {
-            voiceSelect.value = result.selectedVoiceURI;
-        }
-    });
+    // chrome.storage.local.get(['selectedVoiceURI'], (result) => {
+    //     if (result.selectedVoiceURI) {
+    //         voiceSelect.value = result.selectedVoiceURI;
+    //     }
+    // });
 
     voiceSelect.addEventListener('change', () => {
-        chrome.storage.local.set({ selectedVoiceURI: voiceSelect.value });
+        syncCategory();
     });
 }
 
@@ -157,19 +336,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     speedInput.addEventListener('input', () => {
         speedValueSpan.textContent = speedInput.value;
-        chrome.storage.local.set({ speed: parseFloat(speedInput.value) });
+        syncCategory();
+        // chrome.storage.local.set({ speed: parseFloat(speedInput.value) });
     });
 
     volumeInput.addEventListener('input', () => {
         volumeValueSpan.textContent = volumeInput.value;
-        chrome.storage.local.set({ volume: parseFloat(volumeInput.value) });
+        syncCategory();
     });
 
     chrome.runtime.onMessage.addListener((request) => {
         if (request.action === 'alarmStateUpdate') {
             const isRunning = request.isActive || false;
             chrome.storage.local.set({ isRunning: isRunning }, () => {
-                updateButtonStates(isRunning);
+                syncBtnStates(isRunning);
             });
         }
     });
@@ -187,7 +367,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     isRunning = response.isActive;
                 }
                 chrome.storage.local.set({ isRunning: isRunning }, () => {
-                    updateButtonStates(isRunning);
+                    syncBtnStates(isRunning);
                 });
                 return;
             } catch (error) {
@@ -195,7 +375,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (attempts === maxAttempts) {
                     console.error('Failed to get initial alarm status after retries:', error);
                     chrome.storage.local.set({ isRunning: false }, () => {
-                        updateButtonStates(false);
+                        syncBtnStates(false);
                     });
                 } else {
                     console.log(`Retry ${attempts}/${maxAttempts} to get initial alarm status...`);
@@ -210,11 +390,11 @@ document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['messages', 'interval', 'speed', 'volume', 'selectedVoiceURI', 'currentPhraseIndex'], (result) => {
         if (result.messages && result.messages.length > 0) {
             messages = result.messages;
-            messages.forEach(msg => addMessageInput(msg));
+            syncMessages();
         } else {
             addMessageInput();
         }
-        
+
         if (result.interval) {
             intervalInput.value = result.interval;
         }
@@ -246,7 +426,7 @@ actionButton.addEventListener('click', () => {
                         // statusMessage.textContent = 'Reminder stopped.';
                         // statusMessage.classList.add('text-gray-600');
                         // statusMessage.classList.remove('text-green-600', 'text-red-600');
-                        updateButtonStates(false);
+                        syncBtnStates(false);
                     });
                 } else {
                     // statusMessage.textContent = 'Error stopping reminder.';
@@ -255,7 +435,6 @@ actionButton.addEventListener('click', () => {
                 }
             });
         } else {
-            saveMessagesToStorage();
 
             const non_empty_messages = messages.filter(msg => msg !== '');
             if (non_empty_messages.length === 0) {
@@ -275,17 +454,17 @@ actionButton.addEventListener('click', () => {
                 // statusMessage.textContent = 'Invalid interval. Please use a number greater than 5.';
                 // statusMessage.classList.add('text-red-600');
                 // statusMessage.classList.remove('text-green-600', 'text-gray-600');
-                alert('Invalid interval. Please use a number greater than 5.');
+                alert('Invalid interval. Please use a number greater than 4.');
                 return;
             }
 
-            chrome.storage.local.set({ messages: non_empty_messages, interval: interval, isRunning: true, selectedVoiceURI: selectedVoiceURI, speed: speed, volume: volume, currentPhraseIndex: 0 }, () => {
+            chrome.storage.local.set({ isRunning: true, currentPhraseIndex: 0 }, () => {
                 chrome.runtime.sendMessage({ action: 'startAlarm', messages: non_empty_messages, interval: interval, selectedVoiceURI: selectedVoiceURI, speed: speed, volume: volume, initialIndex: 0 }, (response) => {
                     if (response && response.success) {
                         // statusMessage.textContent = `Reminder started! Cycling through ${non_empty_messages.length} phrases every ${interval} seconds.`;
                         // statusMessage.classList.add('text-green-600');
                         // statusMessage.classList.remove('text-gray-600', 'text-red-600');
-                        updateButtonStates(true);
+                        syncBtnStates(true);
                     } else {
                         // statusMessage.textContent = 'Error starting reminder.';
                         // statusMessage.classList.add('text-red-600');
