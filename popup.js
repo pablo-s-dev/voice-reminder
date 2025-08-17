@@ -78,16 +78,9 @@ function saveCategoryOnStorage(categoryName) {
         interval: intervalInput.value
     }
 
-    console.log("category: ", category);
-
-
-
     categories[categoryName] = category;
 
     chrome.storage.local.set({ categories });
-
-
-
 
 }
 
@@ -99,10 +92,12 @@ async function loadCategories() {
 
         const saved_categories = (await chrome.storage.local.get("categories")).categories;
 
-        console.log("saved categories:", saved_categories)
-
         categories = saved_categories ?? {}
         refreshCategorySelect();
+        
+        const categoryName = categorySelect.value;
+        const category = categories[categoryName]
+        applyCategory(category);
 
     }
     catch (e) {
@@ -115,11 +110,7 @@ loadCategories();
 
 function refreshCategorySelect() {
 
-    console.log(categories)
-
     const categories_arr = Array.from(Object.values(categories));
-
-    console.log(categories_arr)
 
     if (categories_arr.length == 0) {
         return;
@@ -130,21 +121,14 @@ function refreshCategorySelect() {
     categories_arr.forEach(category => {
         const option = document.createElement("option")
 
-        console.log(category)
-
         option.value = category.name;
         option.innerText = category.name;
-
-        console.log(option.value)
-        console.log(option.innerText)
 
         categorySelect.appendChild(option);
     })
 }
 
 function applyCategory(category) {
-
-    console.log(category)
 
     if (!category) return;
 
@@ -231,6 +215,8 @@ function syncCategory() {
         .map(input => input.value.trim());
     const category = categories[categorySelect.value]
 
+    console.log(category)
+
     category.messages = messages;
     category.voice = voiceSelect.value;
     category.volume = volumeInput.value;
@@ -239,6 +225,10 @@ function syncCategory() {
     speedValueSpan.textContent = speedInput.value;
     category.interval = intervalInput.value;
     category.name = categorySelect.value
+
+    console.log(category)
+
+    console.log(categories)
 
     chrome.storage.local.set({ categories });
     syncDelBtns();
@@ -475,3 +465,4 @@ actionButton.addEventListener('click', () => {
         }
     });
 });
+
