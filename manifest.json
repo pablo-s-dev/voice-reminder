@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Voice Reminder — Keep Focus",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A Chrome extension that delivers custom voice reminders at regular intervals to help you stay focused.",
   "permissions": [
     "storage",

@@ -62,3 +62,7 @@ Contributions are welcome! Please:
 
 ### [1.0.0] - 2025-06-17
 - Initial release with custom messages, interval settings, voice selection, and speech speed/volume controls.
+### [1.1.0] - 2025-08-16
+- Categories
+### [1.1.1] - 2025-08-17
+- Categories Fix
