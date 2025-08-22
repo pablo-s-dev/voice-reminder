@@ -17,6 +17,8 @@ const saveCategoryBtn = document.getElementById("saveCategoryBtn");
 const categorySelect = document.getElementById("categorySelect");
 // const statusMessage = document.getElementById('statusMessage');
 
+const MIN_INTERVAL = 30;
+
 let messages = [];
 let categories = {};
 
@@ -429,16 +431,26 @@ actionButton.addEventListener('click', () => {
                 return;
             }
 
+            if (isNaN(intervalInput.value)) {
+                // statusMessage.textContent = 'Invalid interval. Please use a number greater than 5.';
+                // statusMessage.classList.add('text-red-600');
+                // statusMessage.classList.remove('text-green-600', 'text-gray-600');
+                alert(`Invalid interval.`);
+                return;
+            }
+
             const interval = parseInt(intervalInput.value);
             const selectedVoiceURI = voiceSelect.value;
             const speed = parseFloat(speedInput.value);
             const volume = parseFloat(volumeInput.value);
 
-            if (isNaN(interval) || interval < 5) {
+            
+
+            if (interval < MIN_INTERVAL) {
                 // statusMessage.textContent = 'Invalid interval. Please use a number greater than 5.';
                 // statusMessage.classList.add('text-red-600');
                 // statusMessage.classList.remove('text-green-600', 'text-gray-600');
-                alert('Invalid interval. Please use a number greater than 4.');
+                alert(`Please choose a interval greater than ${MIN_INTERVAL}s.`);
                 return;
             }
 
