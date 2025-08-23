@@ -217,6 +217,8 @@ function syncCategory() {
         .map(input => input.value.trim());
     const category = categories[categorySelect.value]
 
+    console.log("msgs: ", messages)
+
     category.messages = messages;
     category.voice = voiceSelect.value;
     category.volume = volumeInput.value;
@@ -317,8 +319,7 @@ if (speechSynthesis.onvoiceschanged !== undefined) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    populateVoiceList();
-    setTimeout(populateVoiceList, 100);
+
 
     speedInput.addEventListener('input', () => {
         speedValueSpan.textContent = speedInput.value;
@@ -372,33 +373,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     getInitialAlarmStatus();
-
-    chrome.storage.local.get(['messages', 'interval', 'speed', 'volume', 'selectedVoiceURI', 'currentPhraseIndex'], (result) => {
-        if (result.messages && result.messages.length > 0) {
-            messages = result.messages;
-            syncMessages();
-        } else {
-            addMessageInput();
-        }
-
-        if (result.interval) {
-            intervalInput.value = result.interval;
-        }
-        if (result.speed !== undefined) {
-            speedInput.value = result.speed;
-            speedValueSpan.textContent = result.speed;
-        } else {
-            speedInput.value = 1.0;
-            speedValueSpan.textContent = 1.0;
-        }
-        if (result.volume !== undefined) {
-            volumeInput.value = result.volume;
-            volumeValueSpan.textContent = result.volume;
-        } else {
-            volumeInput.value = 1.0;
-            volumeValueSpan.textContent = 1.0;
-        }
-    });
+    
+    setTimeout(()=>{
+        populateVoiceList();
+        syncCategory();
+    }, 100)
 });
 
 actionButton.addEventListener('click', () => {
