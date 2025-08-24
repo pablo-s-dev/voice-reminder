@@ -71,3 +71,5 @@ Contributions are welcome! Please:
 ### [1.1.5] - 2025-08-24
 - Lots of fixes (saving categories, min interval)
 - Style changes
+### [1.1.6] - 2025-08-24
+- Fixed layout shifts when moving sliders
