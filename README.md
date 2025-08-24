@@ -43,8 +43,8 @@
    - Input the interval (in seconds, minimum 5) for reminders.
 4. **Customize Voice** 🎙️
    - Select a voice from the dropdown and adjust speed/volume sliders.
-5. **Start/Stop Reminders** ▶️
-   - Click **Start** to begin reminders or **Stop** to pause them.
+5. **Categories** 🏷
+   - Save configs in separate categories for reusability.
 
 ## Contributing 🤝
 
@@ -66,3 +66,6 @@ Contributions are welcome! Please:
 - Categories
 ### [1.1.1] - 2025-08-17
 - Categories Fix
+### [1.1.5] - 2025-08-24
+- Lots of fixes (saving categories, min interval)
+- Style changes
