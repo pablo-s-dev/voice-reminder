@@ -32,7 +32,9 @@ function showCategoryForm() {
 
 newCategoryModalBtn.onclick = showCategoryForm;
 
-function hideCategoryForm() {
+function hideCategoryForm(e) {
+
+    e?.preventDefault();
 
     const modal = document.querySelector("#category_form_modal")
 

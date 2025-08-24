@@ -8,17 +8,12 @@
   <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet"> -->
   <style>
     @font-face {
-      font-family: 'Inter';
-      src: url('./fonts/Inter.ttf');
+      font-family: 'SpaceGrotesk';
+      src: url('./fonts/SpaceGrotesk.ttf');
       font-weight: normal;
       font-style: normal;
     }
-    @font-face {
-      font-family: 'Montserrat';
-      src: url('./fonts/Montserrat.ttf');
-      font-weight: normal;
-      font-style: normal;
-    }
+
     * {
       margin: 0;
       padding: 0;
@@ -120,9 +115,9 @@
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: #3b82f6;
+      background: #7b6fe9ff;
       cursor: pointer;
-      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+      box-shadow: 0 0 0 3px #ececec80;
     }
 
     input[type="range"]::-moz-range-thumb {
@@ -302,27 +297,24 @@
       align-items: center;
       justify-content: center;
       margin-top: 5vmin;
-      
+
     }
 
-    .header-logo {
-      background-color: rgba(255, 255, 255, 0.082);
-      border-radius: 10px;
-    }
 
     .header-logo>img {
       height: 4rem;
       width: 4rem;
       margin-right: 0.5rem;
+      gap: 1rem;
 
     }
 
     .header-logo>h1 {
       font-size: 1.5rem;
-      font-weight: 600;
-      color: #817bd3ff;
-      font-family: Roboto;
+      color: #7b6fe9ff;
+      font-family: SpaceGrotesk;
     }
+
     .buy-coffe-btn {
       display: flex;
       justify-content: center;
@@ -331,12 +323,13 @@
       margin: 2vmin 0;
       transform: scale(0.7);
     }
-    .header-logo{
+
+    .header-logo {
       display: flex;
       /* flex-direction: column; */
       justify-content: center;
       align-items: center;
-      
+
     }
 
     #actionButton {
@@ -427,7 +420,6 @@
       align-items: center;
       gap: 4px;
     }
-
   </style>
 </head>
 
@@ -463,19 +455,10 @@
 
   <div class="buy-coffe-btn">
     <!-- Buy Me a Coffee button -->
-    <script 
-      type="text/javascript"
-      src="buymeacoffe.js"
-      data-name="bmc-button"
-      data-slug="pablo.santana"
-      data-color="#817bd3c0"
-      data-emoji="☕"
-      data-font="Inter"
-      data-text="Support this tool"
-      data-outline-color="#383838"
-      data-font-color="#f7f7f7"
-      data-coffee-color="#ffffff">
-    </script>
+    <script type="text/javascript" src="buymeacoffe.js" data-name="bmc-button" data-slug="pablo.santana"
+      data-color="#817bd3c0" data-emoji="☕" data-font="Inter" data-text="Support this tool" data-outline-color="#383838"
+      data-font-color="#f7f7f7" data-coffee-color="#ffffff">
+      </script>
   </div>
 
 
