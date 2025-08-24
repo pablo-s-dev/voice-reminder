@@ -1,7 +1,7 @@
 <div align="center">
    <h1>Voice Reminder — Keep Focus</h1>
    <h3>The periodic voice nudge you need to keep focused</h3>
-   <img src="examples/voice-reminder.png" alt="Voice Reminder Example">
+   <img src="examples/voice-reminder-desktop.png" alt="Voice Reminder Example">
    <p>Voice Reminder Chrome Extension<p>
 </div>
 
