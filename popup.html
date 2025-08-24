@@ -5,8 +5,20 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Voice Reminder – Keep Focus</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet"> -->
   <style>
+    @font-face {
+      font-family: 'Inter';
+      src: url('./fonts/Inter.ttf');
+      font-weight: normal;
+      font-style: normal;
+    }
+    @font-face {
+      font-family: 'Montserrat';
+      src: url('./fonts/Montserrat.ttf');
+      font-weight: normal;
+      font-style: normal;
+    }
     * {
       margin: 0;
       padding: 0;
@@ -23,14 +35,12 @@
 
     *::-webkit-scrollbar-thumb {
       background-color: #9194997c;
-      border-radius: 3px;
     }
 
     body {
       font-family: 'Inter', sans-serif;
       width: 420px;
-      height: 100vh;
-      min-height: 280px;
+      min-height: 100vh;
       background-color: #f3f4f6;
       flex-direction: column;
       align-items: center;
@@ -279,11 +289,11 @@
     }
 
     #addPhraseButton {
-      background-color: #16a34a;
+      background-color: #0f7c39c5;
     }
 
     #newCategoryModalBtn {
-      background-color: #817bd3;
+      background-color: #817bd3c0;
     }
 
     .header {
@@ -291,20 +301,42 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      margin-top: 1rem;
-      gap: 0.3rem;
+      margin-top: 5vmin;
+      
     }
 
-    .header>img {
-      height: 3rem;
-      width: 3rem;
+    .header-logo {
+      background-color: rgba(255, 255, 255, 0.082);
+      border-radius: 10px;
+    }
+
+    .header-logo>img {
+      height: 4rem;
+      width: 4rem;
       margin-right: 0.5rem;
+
     }
 
-    .header>h1 {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: #817bd3;
+    .header-logo>h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: #817bd3ff;
+      font-family: Roboto;
+    }
+    .buy-coffe-btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      margin: 2vmin 0;
+      transform: scale(0.7);
+    }
+    .header-logo{
+      display: flex;
+      /* flex-direction: column; */
+      justify-content: center;
+      align-items: center;
+      
     }
 
     #actionButton {
@@ -366,7 +398,7 @@
     #categoryForm {
       width: 80%;
       padding: 5vmin;
-      background-color: #817bd3;
+      background-color: #817bd3c0;
       border-radius: 10px;
       display: flex;
       flex-direction: column;
@@ -395,8 +427,11 @@
       align-items: center;
       gap: 4px;
     }
+
   </style>
 </head>
+
+
 
 <body>
 
@@ -416,13 +451,34 @@
   </div>
 
   <div class="header">
-    <img src="icons/brain-3.svg" alt="Voice Reminder Logo">
-    <h1>Voice Reminder — Keep Focus</h1>
+    <div class="header-logo">
+      <img src="icons/brain-3.svg" alt="Voice Reminder Logo">
+      <h1>Voice Reminder</h1>
+    </div>
     <button id="actionButton">
       <div id="actionIcon" class="play-icon">
     </button>
     <!-- <div id="statusMessage"></div> -->
   </div>
+
+  <div class="buy-coffe-btn">
+    <!-- Buy Me a Coffee button -->
+    <script 
+      type="text/javascript"
+      src="buymeacoffe.js"
+      data-name="bmc-button"
+      data-slug="pablo.santana"
+      data-color="#817bd3c0"
+      data-emoji="☕"
+      data-font="Inter"
+      data-text="Support this tool"
+      data-outline-color="#383838"
+      data-font-color="#f7f7f7"
+      data-coffee-color="#ffffff">
+    </script>
+  </div>
+
+
 
   <div class="input-group">
     <div>
