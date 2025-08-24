@@ -48,7 +48,7 @@
       padding-bottom: 2rem;
     }
 
-    .input-group {
+    body >.input-container {
       width: 100%;
       margin: 2vmin 0;
       padding: 0 5%;
@@ -414,11 +414,18 @@
       gap: 10px;
     }
 
-    .sliders-container {
+
+    .row {
+
       display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 4px;
+      justify-content: space-around;
+      align-items: stretch;
+      gap: 8px;
+      width: 100%;
+      margin: 3vmin 0;
+      padding: 0 5%;
+
+
     }
   </style>
 </head>
@@ -463,7 +470,7 @@
 
 
 
-  <div class="input-group">
+  <div class="input-container">
     <div>
       <label for="categorySelect">Category:</label>
       <select id="categorySelect">
@@ -473,7 +480,7 @@
     <button class="btn" id="newCategoryModalBtn">New Category</button>
   </div>
 
-  <div class="input-group">
+  <div class="input-container">
     <label>Messages:</label>
     <div class="messages-container-wrapper">
       <div id="messageInputsContainer">
@@ -483,26 +490,28 @@
     </div>
   </div>
 
-  <div class="input-group">
-    <label for="intervalInput">Interval (seconds):</label>
-    <input type="number" id="intervalInput" min="30" value="30">
+  <div class="row">
+    <div class="input-container">
+      <label for="intervalInput">Interval (s):</label>
+      <input type="number" id="intervalInput" min="30" value="30">
+    </div>
+
+    <div class="input-container">
+      <label for="voiceSelect">Select Voice:</label>
+      <select id="voiceSelect">
+        <!-- Voices will be populated here by JavaScript -->
+      </select>
+      <div id="voiceStatusMessage"></div>
+    </div>
   </div>
 
-  <div class="input-group">
-    <label for="voiceSelect">Select Voice:</label>
-    <select id="voiceSelect">
-      <!-- Voices will be populated here by JavaScript -->
-    </select>
-    <div id="voiceStatusMessage"></div>
-  </div>
-
-  <div class="sliders-container">
-    <div class="input-group">
+  <div class="sliders-container row">
+    <div class="input-container">
       <label for="speedInput">Speech Speed: <span id="speedValue">1.0</span></label>
       <input type="range" id="speedInput" min="0.5" max="2.0" step="0.1" value="1.0">
     </div>
 
-    <div class="input-group">
+    <div class="input-container">
       <label for="volumeInput">Volume: <span id="volumeValue">1.0</span></label>
       <input type="range" id="volumeInput" min="0.0" max="1.0" step="0.1" value="1.0">
     </div>
