@@ -11,7 +11,7 @@
 - **Adjustable Intervals** ⏱️: Set how often reminders are spoken (in seconds).
 - **Voice Selection** 🗣️: Choose from available browser voices or use the default.
 - **Speech Customization** 🎚️: Adjust speech speed and volume.
-- **Start/Stop Control** ▶️⏹️: Easily toggle reminders on or off.
+- **Categories** 🏷 : Save configs in separate categories for reusability.
 
 ## Installation 🛠️
 
@@ -43,8 +43,10 @@
    - Input the interval (in seconds, minimum 5) for reminders.
 4. **Customize Voice** 🎙️
    - Select a voice from the dropdown and adjust speed/volume sliders.
-5. **Categories** 🏷
-   - Save configs in separate categories for reusability.
+5. **Start/Stop Reminders** ▶️
+   - Click **Start** to begin reminders or **Stop** to pause them.
+6. **Categories** 🏷
+   - Click **New Category** to save your current configs in a category.
 
 ## Contributing 🤝
 
