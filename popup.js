@@ -403,7 +403,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (response && response.isActive !== undefined) {
                     isRunning = response.isActive;
                 }
-                chrome.storage.local.set({ isRunning: isRunning }, () => {
+                chrome.storage.local.set({ isRunning }, () => {
                     syncBtnStates(isRunning);
                 });
                 return;
@@ -485,7 +485,7 @@ actionButton.addEventListener('click', () => {
             }
 
             chrome.storage.local.set({ isRunning: true, currentPhraseIndex: 0 }, () => {
-                chrome.runtime.sendMessage({ action: 'startAlarm', messages: non_empty_messages, interval: interval, selectedVoiceURI: selectedVoiceURI, speed: speed, volume: volume, initialIndex: 0 }, (response) => {
+                chrome.runtime.sendMessage({ action: 'startAlarm', messages: non_empty_messages, interval, selectedVoiceURI, speed, volume, initialIndex: 0 }, (response) => {
                     if (response && response.success) {
                         // statusMessage.textContent = `Reminder started! Cycling through ${non_empty_messages.length} phrases every ${interval} seconds.`;
                         // statusMessage.classList.add('text-green-600');

@@ -73,3 +73,6 @@ Contributions are welcome! Please:
 - Style changes
 ### [1.1.6] - 2025-08-24
 - Fixed layout shifts when moving sliders
+### [1.1.7] - 2025-09-06
+- Fix voice resetting
+- Default Category Added
