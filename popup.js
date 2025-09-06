@@ -90,29 +90,53 @@ function saveCategoryOnStorage(categoryName) {
 
 saveCategoryBtn.onclick = onSaveCategoryClick;
 
+function gen_default_category() {
+    return {
+        name: "Default",
+        messages: [],
+        volume: 0.5,
+        speed: 1.3,
+        voice: "auto",
+        interval: 60
+    }
+}
+
 async function loadCategories() {
+
+    console.log("Loading categories...")
 
     try {
 
         const saved_categories = (await chrome.storage.local.get("categories")).categories;
 
-        categories = saved_categories ?? {}
-        refreshCategorySelect();
+        console.log("Loaded categories: ", saved_categories);
         
-        const categoryName = categorySelect.value;
-        const category = categories[categoryName]
+
+        categories = saved_categories ?? { "Default": gen_default_category() };
+
+        if (!categories["Default"]) {
+            categories["Default"] = gen_default_category();
+            saveCategoryOnStorage("Default");
+        }
+
+        console.log("Final categories: ", categories);
+
+        refreshCategorySelect();
+
+        const category = getCurrentCategory();
         applyCategory(category);
 
     }
     catch (e) {
         console.log(e)
+        categories = { "Default": gen_default_category() };
     }
 
 }
 
-loadCategories();
-
 function refreshCategorySelect() {
+
+    console.log("Refreshing category select...")
 
     const categories_arr = Array.from(Object.values(categories));
 
@@ -130,9 +154,18 @@ function refreshCategorySelect() {
 
         categorySelect.appendChild(option);
     })
+
+    console.log("array of categories: ", categories_arr)
+}
+
+function getCurrentCategory() {
+    const categoryName = categorySelect.value;
+    return categories[categoryName] ?? categories["Default"] ?? gen_default_category();
 }
 
 function applyCategory(category) {
+    
+    console.log("Applying category: ", category)
 
     if (!category) return;
 
@@ -152,11 +185,13 @@ function applyCategory(category) {
         messages = category.messages;
         syncMessages();
     }
+    categorySelect.value = category.name;
 }
 categorySelect.onchange = e => {
-    const categoryName = e.target.value;
 
-    const category = categories[categoryName];
+    console.log("Category changed: ", e.target.value)
+
+    const category = getCurrentCategory();
 
     applyCategory(category);
 }
@@ -215,11 +250,17 @@ function syncDelBtns() {
 }
 
 function syncCategory() {
+    
+
+    console.log("Syncing category: ", categorySelect.value);
+
     messages = Array.from(messageInputsContainer.querySelectorAll('input[type="text"]'))
         .map(input => input.value.trim());
-    const category = categories[categorySelect.value]
+    const category = getCurrentCategory();
 
-    console.log("msgs: ", messages)
+    console.log("voiceSelect.value", voiceSelect.value)
+
+
 
     category.messages = messages;
     category.voice = voiceSelect.value;
@@ -229,6 +270,10 @@ function syncCategory() {
     speedValueSpan.textContent = speedInput.value;
     category.interval = intervalInput.value;
     category.name = categorySelect.value
+
+    console.log("Updated category: ", category)
+
+    console.log("Saving categories: ", categories)
 
     chrome.storage.local.set({ categories });
     syncDelBtns();
@@ -305,6 +350,8 @@ function populateVoiceList() {
         voiceSelect.appendChild(option);
     });
 
+    console.log("Voices loaded: ", voices);
+
     // chrome.storage.local.get(['selectedVoiceURI'], (result) => {
     //     if (result.selectedVoiceURI) {
     //         voiceSelect.value = result.selectedVoiceURI;
@@ -312,6 +359,7 @@ function populateVoiceList() {
     // });
 
     voiceSelect.addEventListener('change', () => {
+        console.log("Selected voice: ", voiceSelect.value);
         syncCategory();
     });
 }
@@ -376,9 +424,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     getInitialAlarmStatus();
     
-    setTimeout(()=>{
+    
+    setTimeout(async () => {
         populateVoiceList();
-        syncCategory();
+        await loadCategories();
     }, 100)
 });
 
